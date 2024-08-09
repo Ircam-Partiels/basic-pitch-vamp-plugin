@@ -1,0 +1,3 @@
+[submodule "basic-pitch"]
+	path = basic-pitch
+	url = https://github.com/spotify/basic-pitch.git
