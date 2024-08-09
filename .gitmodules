@@ -1,3 +1,6 @@
 [submodule "basic-pitch"]
 	path = basic-pitch
 	url = https://github.com/spotify/basic-pitch.git
+[submodule "ircam-vamp-extension"]
+	path = ircam-vamp-extension
+	url = https://github.com/Ircam-Partiels/ircam-vamp-extension.git
