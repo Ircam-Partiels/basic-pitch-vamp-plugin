@@ -1,0 +1,6 @@
+build
+release
+package
+*.zip
+*.tar
+*.pdf
