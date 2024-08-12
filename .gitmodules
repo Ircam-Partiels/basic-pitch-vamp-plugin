@@ -4,3 +4,6 @@
 [submodule "ircam-vamp-extension"]
 	path = ircam-vamp-extension
 	url = https://github.com/Ircam-Partiels/ircam-vamp-extension.git
+[submodule "vamp-plugin-packager"]
+	path = vamp-plugin-packager
+	url = https://github.com/Ircam-Partiels/vamp-plugin-packager.git
