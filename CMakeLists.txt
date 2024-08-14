@@ -68,7 +68,7 @@ message(STATUS "Basic Pitch Vamp Plugin: " ${BPVP_BUILD_TAG} " (" ${GIT_COMMIT_I
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/version.txt ${BPVP_BUILD_TAG})
 
 ### Package ###
-set(VPP_NAME "BasicPitch" CACHE PATH "The name of the project" FORCE)
+set(VPP_NAME "Basic-Pitch" CACHE PATH "The name of the project" FORCE)
 set(VPP_COMPANY "Ircam" CACHE PATH "The name of the company" FORCE)
 set(VPP_URL "www.ircam.fr" CACHE PATH "The URL of the project")
 set(VPP_APPID "9538f07d-8bf4-460b-ac1c-920465ff316a" CACHE PATH "The unique ID of the project")
