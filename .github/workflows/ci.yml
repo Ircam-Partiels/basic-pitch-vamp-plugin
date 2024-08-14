@@ -1,0 +1,198 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  # Checks for the '[debug]' string in the commit message to compile as debug instead of release.
+  build_type: ${{ contains(github.event.head_commit.message, '[debug]') && 'Debug' || 'Release' }}
+  # Checks whether the event corresponds to a tag to activate the automatic creation of a release.
+  is_tagged: ${{ startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  # Checks source code formatting with clang before compiling.
+  Format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check
+      uses: jidicula/clang-format-action@v4.13.0
+      with:
+        clang-format-version: '18'
+        check-path: '.'
+  # Creates a cache for the model downloaded and transcribed 
+  # into the C++ file for embedding in the binary. 
+  Cache:
+    runs-on: ubuntu-latest
+    needs: Format
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ./build/source
+        key: wvp-model-tiny
+        enableCrossOsArchive: true
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+  # Compiles, tests and packages the plugin for Ubuntu.
+  Ubuntu:
+    runs-on: ubuntu-latest
+    needs: Cache
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ./build/source
+        key: wvp-model-tiny
+        enableCrossOsArchive: true
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+    - name: Build
+      run: cmake --build ${{ github.workspace }}/build
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Artifact
+      uses: actions/upload-artifact@v4.3.6
+      with:
+        name: Basic-Pitch-Linux
+        path: ${{ github.workspace }}/package/Basic-Pitch-Linux.tar.gz
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: ${{ github.workspace }}/package/Basic-Pitch-Linux.tar.gz
+  # Compiles, tests and packages the plugin for Windows.
+  Windows:
+    runs-on: windows-latest
+    needs: Cache
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ./build/source
+        key: wvp-model-tiny
+        enableCrossOsArchive: true
+    - name: Prepare
+      run: powershell -Command "& {[System.IO.File]::WriteAllBytes('${{ github.workspace }}\cert.p12', [System.Convert]::FromBase64String('${{ secrets.SECTIGO_CERT_P12}}'))}"
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G "Visual Studio 17 2022" -A x64 -DVPP_NOTARIZE=ON -DVPP_CODESIGN_WINDOWS_KEYFILE=${{ github.workspace }}\cert.p12 -DVPP_CODESIGN_WINDOWS_KEYPASSWORD=${{ secrets.DEV_ID_PASSWORD }}
+    - name: Build
+      run: cmake --build ${{ github.workspace }}/build --config ${{ env.build_type }}
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Artifact
+      uses: actions/upload-artifact@v4.3.6
+      with:
+        name: Basic-Pitch-Windows
+        path: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
+  # Compiles, tests and packages the plugin for MacOS.
+  MacOS:
+    runs-on: macos-latest
+    needs: Cache
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ./build/source
+        key: wvp-model-tiny
+        enableCrossOsArchive: true
+    - name: Prepare
+      run: |
+        security create-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security list-keychains -s buildagent && security default-keychain -s buildagent
+        echo ${{ secrets.DEV_ID_APP_CERT }} | base64 --decode > ./cert.p12
+        security import ./cert.p12 -P ${{ secrets.DEV_ID_PASSWORD }} -A -t cert -f pkcs12 -k buildagent -T /usr/bin/codesign >/dev/null
+        rm ./cert.p12
+        echo ${{ secrets.DEV_ID_INST_CERT }} | base64 --decode > ./cert.p12
+        security import ./cert.p12 -P ${{ secrets.DEV_ID_PASSWORD }} -A -t cert -f pkcs12 -k buildagent -T /usr/bin/codesign >/dev/null
+        rm ./cert.p12
+        security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k ${{ secrets.DEV_ID_PASSWORD }} buildagent >/dev/null
+        xcrun notarytool store-credentials "notary-installer" --apple-id ${{ secrets.DEV_USER_APPLE_ID }} --team-id ${{ secrets.DEV_TEAM_APPLE_ID }} --password ${{ secrets.DEV_SPEC_APP_PASSWORD }} >/dev/null
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G "Xcode" -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON
+    - name: Build
+      run: |
+        security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security set-keychain-settings -lut 7200 buildagent
+        set -o pipefail && cmake --build ${{ github.workspace }}/build --config ${{ env.build_type }} | xcbeautify --renderer github-actions
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Artifact
+      uses: actions/upload-artifact@v4.3.6
+      with:
+        name: Basic-Pitch-MacOS
+        path: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
+  # Generates the documentation.
+  Doc:
+    runs-on: ubuntu-latest
+    needs: Cache
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm install mdpdf -g
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ./build/source
+        key: wvp-model-tiny
+        enableCrossOsArchive: true
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+    - name: Build
+      run: |
+        cmake --build build --target wvp_manual
+        zip -jr Basic-Pitch-Manual.zip ${{ github.workspace }}/build/Manual
+    - name: Artifact
+      uses: actions/upload-artifact@v4.3.6
+      with:
+        name: Basic-Pitch-Manual
+        path: ${{ github.workspace }}/build/Manual
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: ${{ github.workspace }}/Basic-Pitch-Manual.zip
