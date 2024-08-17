@@ -19,9 +19,9 @@
 
 ## Introduction
 
-The Basic Picth plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/). The Basic Pitch plugin analyses the pitch in the audio stream and generates curves corresponding to the fequencies. The Basic Picth is embedded in the plugin.
+The Basic Pitch plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/). The Basic Pitch plugin analyses the pitch in the audio stream and generates curves corresponding to the fequencies. The Basic Pitch is embedded in the plugin.
 
-The Basic Picth Vamp Plugin has been designed for use in the free audio analysis application [Partiels](https://forum.ircam.fr/projects/detail/partiels/).
+The Basic Pitch Vamp Plugin has been designed for use in the free audio analysis application [Partiels](https://forum.ircam.fr/projects/detail/partiels/).
 
 ## Requirements
 

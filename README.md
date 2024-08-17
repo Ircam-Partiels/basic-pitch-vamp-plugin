@@ -4,9 +4,9 @@
     <a href="https://github.com/Ircam-Partiels/basic-pitch-vamp-plugin/actions/workflows/ci.yml"><img src="https://github.com/Ircam-Partiels/basic-pitch-vamp-plugin/actions/workflows/ci.yml/badge.svg" alt="Workflows"></a>
   </p>
 
-The Basic Picth plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/).
+The Basic Pitch plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/).
 
-The Basic Picth Vamp Plugin has been designed for use in the free audio analysis application [Partiels](https://forum.ircam.fr/projects/detail/partiels/).
+The Basic Pitch Vamp Plugin has been designed for use in the free audio analysis application [Partiels](https://forum.ircam.fr/projects/detail/partiels/).
 
 <p align="center">
 <img src="./resource/Screenshot.png" alt="Screenshot" width=720>
