@@ -175,8 +175,8 @@ namespace Bpvp
                             auto amplitude = 0.0;
                             for(auto f = frameStartIndex; f < frameEndIndex; f++)
                             {
-                                auto const index = static_cast<size_t>(f) * numNotes + static_cast<size_t>(noteIndex);
-                                amplitude += static_cast<double>(currentFrames.at(index));
+                                auto const cindex = static_cast<size_t>(f) * numNotes + static_cast<size_t>(noteIndex);
+                                amplitude += static_cast<double>(currentFrames.at(cindex));
                             }
                             amplitude /= static_cast<double>(frameDuration);
                             notes.push_back({frameToSeconds(frameStartIndex), frameToSeconds(frameEndIndex), midiToHertz(noteIndex + modelNoteOffset), static_cast<float>(amplitude)});
