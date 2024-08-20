@@ -126,8 +126,8 @@ namespace Bpvp
                             auto accumulatedFrames = 0;
                             while(frameEndIndex < lastFrameIndex && accumulatedFrames < maxFramesBelowThreshold)
                             {
-                                auto const energy = frames.at(static_cast<size_t>(frameEndIndex) * numNotes + static_cast<size_t>(noteIndex));
-                                accumulatedFrames = energy < frameEnergyThreshold ? accumulatedFrames + 1 : 0;
+                                auto const cenergy = frames.at(static_cast<size_t>(frameEndIndex) * numNotes + static_cast<size_t>(noteIndex));
+                                accumulatedFrames = cenergy < frameEnergyThreshold ? accumulatedFrames + 1 : 0;
 
                                 frames[static_cast<size_t>(frameEndIndex) * numNotes + static_cast<size_t>(noteIndex)] = 0.0f;
                                 if(noteIndex < numNotes - 1)
@@ -148,8 +148,8 @@ namespace Bpvp
                             auto accumulatedFrames = 0;
                             while(frameStartIndex > 0 && accumulatedFrames < maxFramesBelowThreshold)
                             {
-                                auto const energy = frames.at(static_cast<size_t>(frameStartIndex) * numNotes + static_cast<size_t>(noteIndex));
-                                accumulatedFrames = energy < frameEnergyThreshold ? accumulatedFrames + 1 : 0;
+                                auto const cenergy = frames.at(static_cast<size_t>(frameStartIndex) * numNotes + static_cast<size_t>(noteIndex));
+                                accumulatedFrames = cenergy < frameEnergyThreshold ? accumulatedFrames + 1 : 0;
 
                                 frames[static_cast<size_t>(frameStartIndex) * numNotes + static_cast<size_t>(noteIndex)] = 0.0f;
                                 if(noteIndex < numNotes - 1)
