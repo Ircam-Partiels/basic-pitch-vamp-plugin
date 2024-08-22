@@ -17,5 +17,5 @@ namespace Bpvp
         float amplitude;
     };
 
-    std::vector<Note> getNotes(std::vector<float> const& frames, std::vector<float> const& onsets, size_t numFrames, size_t numNotes, bool inferOnsets, float frameEnergyThreshold, float onsetEnergyThreshold, double minNoteDuration, long maxFramesBelowThreshold, std::optional<float> const maxFreq = {}, std::optional<float> const minFreq = {}, bool melodiaTrick = true);
+    std::vector<Note> getNotes(std::vector<std::array<float, modelNumNotes>> const& frames, std::vector<std::array<float, modelNumNotes>> const& onsets, bool inferOnsets, size_t voiceIndex, float frameEnergyThreshold, float onsetEnergyThreshold, double minNoteDuration, long maxFramesBelowThreshold, std::optional<float> const minFreq = {}, std::optional<float> const maxFreq = {}, bool melodiaTrick = true);
 } // namespace Bpvp

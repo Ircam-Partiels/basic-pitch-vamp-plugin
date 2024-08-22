@@ -299,6 +299,19 @@ Bpvp::Plugin::ParameterList Bpvp::Plugin::getParameterDescriptors() const
     ParameterList list;
     {
         ParameterDescriptor param;
+        param.identifier = "voiceindex";
+        param.name = "Voice Index";
+        param.description = "The index of the voice";
+        param.unit = "";
+        param.minValue = 0.0f;
+        param.maxValue = 23.0f;
+        param.defaultValue = 0.0f;
+        param.isQuantized = true;
+        param.quantizeStep = 1.0f;
+        list.push_back(std::move(param));
+    }
+    {
+        ParameterDescriptor param;
         param.identifier = "framethreshold";
         param.name = "Frame Threshold";
         param.description = "The frame's amplitude threshold";
@@ -341,7 +354,11 @@ Bpvp::Plugin::ParameterList Bpvp::Plugin::getParameterDescriptors() const
 
 void Bpvp::Plugin::setParameter(std::string paramid, float newval)
 {
-    if(paramid == "framethreshold")
+    if(paramid == "voiceindex")
+    {
+        mVoiceIndex = static_cast<size_t>(std::round(std::clamp(newval, 0.0f, 23.0f)));
+    }
+    else if(paramid == "framethreshold")
     {
         mFrameThreshold = std::clamp(newval, 0.05f, 0.95f);
     }
@@ -351,7 +368,7 @@ void Bpvp::Plugin::setParameter(std::string paramid, float newval)
     }
     else if(paramid == "minnoteduration")
     {
-        mMinNoteDuration = static_cast<int>(std::round(std::clamp(newval, 0.0f, 120.0f)));
+        mMinNoteDuration = static_cast<int>(std::round(std::clamp(newval, 0.0f, 1000.0f)));
     }
     else
     {
@@ -361,6 +378,10 @@ void Bpvp::Plugin::setParameter(std::string paramid, float newval)
 
 float Bpvp::Plugin::getParameter(std::string paramid) const
 {
+    if(paramid == "voiceindex")
+    {
+        return static_cast<float>(mVoiceIndex);
+    }
     if(paramid == "framethreshold")
     {
         return mFrameThreshold;
@@ -399,24 +420,40 @@ Bpvp::Plugin::OutputExtraList Bpvp::Plugin::getOutputExtraDescriptors(size_t out
 
 void Bpvp::Plugin::processModel()
 {
-    if(mInputBufferPosition < mInputBuffer.size())
+    static auto constexpr effectiveBlockSize = modelBlockSize - modelBlockPadding;
+    while(mInputBufferPosition >= effectiveBlockSize)
     {
-        return;
+        std::fill(mAudioBuffer.begin(), mAudioBuffer.end(), 0.0f);
+        std::copy(mInputBuffer.cbegin(), std::next(mInputBuffer.cbegin(), effectiveBlockSize), mAudioBuffer.begin());
+
+        TfLiteTensorCopyFromBuffer(TfLiteInterpreterGetInputTensor(mInterpreter.get(), 0), mAudioBuffer.data(), mAudioBuffer.size() * sizeof(float));
+        for(size_t i = effectiveBlockSize; i < mInputBufferPosition; ++i)
+        {
+            mInputBuffer[i - effectiveBlockSize] = mInputBuffer.at(i);
+        }
+        mInputBufferPosition -= effectiveBlockSize;
+
+        TfLiteInterpreterInvoke(mInterpreter.get());
+
+        auto const addFrames = [&](std::vector<std::array<float, modelNumNotes>>& buffer)
+        {
+            buffer.reserve(buffer.size() + modelNumFrames);
+            auto it = mOuputBuffer.cbegin();
+            while(it != mOuputBuffer.cend())
+            {
+                auto const next = std::next(it, modelNumNotes);
+                buffer.push_back({});
+                std::copy(it, next, buffer.back().begin());
+                it = next;
+            }
+        };
+
+        TfLiteTensorCopyToBuffer(TfLiteInterpreterGetOutputTensor(mInterpreter.get(), 0), mOuputBuffer.data(), mOuputBuffer.size() * sizeof(float));
+        addFrames(mAccumulatedOnsets);
+
+        TfLiteTensorCopyToBuffer(TfLiteInterpreterGetOutputTensor(mInterpreter.get(), 1), mOuputBuffer.data(), mOuputBuffer.size() * sizeof(float));
+        addFrames(mAccumulatedFrames);
     }
-
-    TfLiteTensorCopyFromBuffer(TfLiteInterpreterGetInputTensor(mInterpreter.get(), 0), mInputBuffer.data(), mInputBuffer.size() * sizeof(float));
-    TfLiteInterpreterInvoke(mInterpreter.get());
-
-    TfLiteTensorCopyToBuffer(TfLiteInterpreterGetOutputTensor(mInterpreter.get(), 0), mOuputBuffer.data(), mOuputBuffer.size() * sizeof(float));
-    mAccumulatedOnsets.reserve(mAccumulatedOnsets.size() + mOuputBuffer.size());
-    mAccumulatedOnsets.insert(mAccumulatedOnsets.end(), mOuputBuffer.cbegin(), mOuputBuffer.cend());
-
-    TfLiteTensorCopyToBuffer(TfLiteInterpreterGetOutputTensor(mInterpreter.get(), 1), mOuputBuffer.data(), mOuputBuffer.size() * sizeof(float));
-    mAccumulatedFrames.reserve(mAccumulatedFrames.size() + mOuputBuffer.size());
-    mAccumulatedFrames.insert(mAccumulatedFrames.end(), mOuputBuffer.cbegin(), mOuputBuffer.cend());
-
-    std::fill(mInputBuffer.begin(), mInputBuffer.end(), 0.0f);
-    mInputBufferPosition -= mInputBuffer.size();
 }
 
 Bpvp::Plugin::FeatureSet Bpvp::Plugin::process(float const* const* inputBuffers, [[maybe_unused]] Vamp::RealTime timestamp)
@@ -451,8 +488,7 @@ Bpvp::Plugin::FeatureSet Bpvp::Plugin::getRemainingFeatures()
     {
         return {};
     }
-    auto const numFrames = static_cast<size_t>(mAccumulatedFrames.size() / modelNumNotes);
-    auto const notes = getNotes(mAccumulatedFrames, mAccumulatedOnsets, numFrames, modelNumNotes, true, mFrameThreshold, mOnsetThreshold, static_cast<double>(mMinNoteDuration) / 1000.0, 20);
+    auto const notes = getNotes(mAccumulatedFrames, mAccumulatedOnsets, true, mVoiceIndex, mFrameThreshold, mOnsetThreshold, static_cast<double>(mMinNoteDuration) / 1000.0, 11, 80.0f, 8000.0f);
     FeatureList fl;
     fl.reserve(notes.size());
     for(auto const& note : notes)
@@ -463,6 +499,12 @@ Bpvp::Plugin::FeatureSet Bpvp::Plugin::getRemainingFeatures()
         feature.hasDuration = true;
         feature.duration = Vamp::RealTime::fromSeconds(note.end) - feature.timestamp;
         feature.values = {static_cast<float>(note.pitch), static_cast<float>(note.amplitude)};
+        fl.push_back(std::move(feature));
+        feature.hasTimestamp = true;
+        feature.timestamp = Vamp::RealTime::fromSeconds(note.end);
+        feature.hasDuration = true;
+        feature.duration = Vamp::RealTime();
+        feature.values = {};
         fl.push_back(std::move(feature));
     }
     return {{0, fl}};

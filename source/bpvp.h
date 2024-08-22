@@ -74,12 +74,14 @@ namespace Bpvp
         model_uptr mModel{nullptr, nullptr};
         interpreter_uptr mInterpreter{nullptr, nullptr};
         Resampler mResampler;
-        std::array<float, modelBlockSize> mInputBuffer;
+        std::array<float, modelBlockSize * 2> mInputBuffer;
+        std::array<float, modelBlockSize> mAudioBuffer;
         std::array<float, modelTensorSize> mOuputBuffer;
-        std::vector<float> mAccumulatedFrames;
-        std::vector<float> mAccumulatedOnsets;
+        std::vector<std::array<float, modelNumNotes>> mAccumulatedFrames;
+        std::vector<std::array<float, modelNumNotes>> mAccumulatedOnsets;
         size_t mInputBufferPosition{0};
         size_t mBlockSize{0};
+        size_t mVoiceIndex{0};
         float mFrameThreshold{0.7f};
         float mOnsetThreshold{0.5f};
         int mMinNoteDuration{120};
