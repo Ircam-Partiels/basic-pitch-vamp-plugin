@@ -31,7 +31,8 @@ ctest -C Debug -VV --test-dir build
 
 ## Credits
 
-- **[Basic Pitch Vamp plugin](https://www.ircam.fr/)** by Pierre Guillot at IRCAM IMR Department
-- **[Basic Pitch](https://github.com/spotify/basic-pitch)** model by Spotify's Audio Intelligence Lab
+- **[Basic Pitch Vamp plugin](https://www.ircam.fr/)** by Pierre Guillot at IRCAM IMR Department.
+- **[Basic Pitch](https://github.com/spotify/basic-pitch)** model by Spotify's Audio Intelligence Lab.
+- **[TensorFlow](https://github.com/tensorflow/tensorflow)** originally developed by Google Brain team. 
 - **[Vamp SDK](https://github.com/vamp-plugins/vamp-plugin-sdk)** by Chris Cannam, copyright (c) 2005-2024 Chris Cannam and Centre for Digital Music, Queen Mary, University of London.
 - **[Ircam Vamp Extension](https://github.com/Ircam-Partiels/ircam-vamp-extension)** by Pierre Guillot at [IRCAM IMR department](https://www.ircam.fr/).  
