@@ -136,6 +136,7 @@ if(PARTIELS_EXE)
   endif()
   message(STATUS "Debugging: " ${PARTIELS_EXE})
   set_target_properties(bpvp PROPERTIES XCODE_SCHEME_EXECUTABLE ${PARTIELS_EXE})
+  set_target_properties(bpvp PROPERTIES XCODE_SCHEME_ARGUMENTS "${CMAKE_CURRENT_SOURCE_DIR}/test/basicpitch.ptldoc")
   set_target_properties(bpvp PROPERTIES XCODE_SCHEME_ENVIRONMENT "VAMP_PATH=${CMAKE_CURRENT_BINARY_DIR}/Debug")
 endif()
 
