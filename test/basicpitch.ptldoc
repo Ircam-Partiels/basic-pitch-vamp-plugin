@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<document MiscModelVersion="131075" viewport_x="0" viewport_y="0" path="/Users/guillot/Gitlab/IVP/basic-pitch-vamp-plugin/test/m10_row_spoken.ptldoc"
+<document MiscModelVersion="131075" viewport_x="0" viewport_y="0" path="/Users/guillot/Gitlab/IVP/basic-pitch-vamp-plugin/test/basicpitch.ptldoc"
           grid="1" autoresize="1" samplerate="44100.0" channels="1">
   <reader>
-    <value file="/Users/guillot/Gitlab/IVP/basic-pitch-vamp-plugin/basic-pitch/tests/resources/vocadito_10.wav"
-           channel="0"/>
+    <value file="/Users/guillot/Nextcloud/Sounds/Haendel.wav" channel="0"/>
   </reader>
   <layout value="0cbca15363f34e82af09c599fdff328c"/>
   <layout value="3a1a8c77cc504338a8cc8452b77cc31f"/>
-  <timeZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="9.097823129251701"
-            minimumLength="0.01160997732426304" visibleRange_start="0.502344403897189"
-            visibleRange_end="8.453931532365866">
+  <timeZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="44.03961451247166"
+            minimumLength="0.01160997732426304" visibleRange_start="0.0"
+            visibleRange_end="44.03961451247166">
     <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="0"
           tickPowerBase="2.0" tickDivisionFactor="10.0"/>
   </timeZoom>
-  <transport MiscModelVersion="131075" startPlayhead="1.774358051295052" looping="0"
+  <transport MiscModelVersion="131075" startPlayhead="13.73160651258433" looping="0"
              loopRange_start="0.0" loopRange_end="0.0" stopAtLoopEnd="0" autoScroll="1"
              gain="1.0" magnetize="0"/>
   <groups MiscModelVersion="131075" identifier="0cbca15363f34e82af09c599fdff328c"
-          name="Group 1" height="681" colour="0" expanded="0" referenceid="">
+          name="Group 1" height="528" colour="0" expanded="1" referenceid="">
+    <layout value="33c2018ef5a748d39c3a24cf6fea23f9"/>
     <layout value="52dccd682ab2456e9ee3b4bf6d7805bf"/>
     <layout value="24b3f47a03a745c2980a09cb873d5542"/>
     <zoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="1.0"
-          minimumLength="0.0" visibleRange_start="0.001294080259525592"
-          visibleRange_end="0.01659932392217868">
+          minimumLength="0.0" visibleRange_start="0.0" visibleRange_end="0.03718769331565178">
       <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="3"
             tickPowerBase="2.0" tickDivisionFactor="5.0"/>
     </zoom>
   </groups>
   <groups MiscModelVersion="131075" identifier="3a1a8c77cc504338a8cc8452b77cc31f"
-          name="Group 2" height="194" colour="ff3c0066" expanded="0" referenceid="">
+          name="Group 2" height="101" colour="ff3c0066" expanded="0" referenceid="">
     <layout value="c03605ef7aea48b19ed64beb9c18759d"/>
     <zoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="1.0"
           minimumLength="0.0" visibleRange_start="0.0" visibleRange_end="1.0">
@@ -38,7 +37,7 @@
     </zoom>
   </groups>
   <tracks MiscModelVersion="131075" identifier="24b3f47a03a745c2980a09cb873d5542"
-          name="Fast Fourier Transform" input="" height="52" font="Nunito Sans; 14.0 Regular"
+          name="Fast Fourier Transform" input="" height="78" font="Nunito Sans; 14.0 Regular"
           showInGroup="1" zoomValueMode="1" zoomLink="1">
     <file path="" commit="">
       <args/>
@@ -4211,7 +4210,7 @@
             tickPowerBase="2.0" tickDivisionFactor="5.0"/>
     </valueZoom>
     <binZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="4097.0"
-             minimumLength="1.0" visibleRange_start="5.301846823276352" visibleRange_end="68.00743010916607">
+             minimumLength="1.0" visibleRange_start="0.0" visibleRange_end="152.3579795142253">
       <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="3"
             tickPowerBase="2.0" tickDivisionFactor="5.0"/>
     </binZoom>
@@ -4253,25 +4252,102 @@
     </binZoom>
   </tracks>
   <tracks MiscModelVersion="131075" identifier="52dccd682ab2456e9ee3b4bf6d7805bf"
-          name="Basic Pitch" input="" height="106" font="Nunito Sans; 14.0 Regular"
+          name="Basic Pitch 1" input="" height="85" font="Nunito Sans; 14.0 Regular"
           showInGroup="1" zoomValueMode="1" zoomLink="1">
     <file path="" commit="">
       <args/>
     </file>
     <description name="Basic Pitch" inputDomain="0" maker="Ircam" version="1"
-                 category="" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
+                 category="Pitch" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
       <defaultState blockSize="1024" stepSize="0" windowType="3">
         <parameters key="framethreshold" value="0.699999988079071"/>
         <parameters key="minnoteduration" value="120.0"/>
         <parameters key="onsetthreshold" value="0.5"/>
+        <parameters key="voiceindex" value="0.0"/>
       </defaultState>
       <parameters>
-        <value identifier="framethreshold" name="Frame Theshold" description="The frame's amplitude threshold"
+        <value identifier="voiceindex" name="Voice Index" description="The index of the voice"
+               unit="" minValue="0.0" maxValue="23.0" defaultValue="0.0" isQuantized="1"
+               quantizeStep="1.0"/>
+      </parameters>
+      <parameters>
+        <value identifier="framethreshold" name="Frame Threshold" description="The frame's amplitude threshold"
                unit="" minValue="0.05000000074505806" maxValue="0.949999988079071"
                defaultValue="0.699999988079071" isQuantized="1" quantizeStep="0.009999999776482582"/>
       </parameters>
       <parameters>
-        <value identifier="onsetthreshold" name="Onset Theshold" description="The onset's amplitude threshold"
+        <value identifier="onsetthreshold" name="Onset Threshold" description="The onset's amplitude threshold"
+               unit="" minValue="0.05000000074505806" maxValue="0.949999988079071"
+               defaultValue="0.5" isQuantized="1" quantizeStep="0.009999999776482582"/>
+      </parameters>
+      <parameters>
+        <value identifier="minnoteduration" name="Minimum Note Duration" description="The minimum note duration"
+               unit="" minValue="0.0" maxValue="1000.0" defaultValue="120.0"
+               isQuantized="1" quantizeStep="1.0"/>
+      </parameters>
+      <output identifier="pitch" name="Pitch" description="Pitch estimated from the input signal"
+              unit="Hertz" hasFixedBinCount="1" binCount="1" hasKnownExtents="1"
+              minValue="0.0" maxValue="22050.0" isQuantized="0" quantizeStep="0.0"
+              sampleType="2" sampleRate="0.0" hasDuration="1"/>
+      <extraOutputs>
+        <value identifier="amplitude" name="Amplitude" description="The amplitude of the note"
+               unit="" hasKnownExtents="1" minValue="0.0" maxValue="1.0" isQuantized="0"
+               quantizeStep="0.0"/>
+      </extraOutputs>
+      <input identifier="" name="" description="" unit="" hasFixedBinCount="0"
+             binCount="0" hasKnownExtents="0" minValue="0.0" maxValue="0.0"
+             isQuantized="0" quantizeStep="0.0" sampleType="0" sampleRate="0.0"
+             hasDuration="0"/>
+    </description>
+    <key identifier="basicpitch:ircambasicpitch" feature="pitch"/>
+    <state blockSize="1024" stepSize="0" windowType="3">
+      <parameters key="framethreshold" value="0.5"/>
+      <parameters key="minnoteduration" value="100.0"/>
+      <parameters key="onsetthreshold" value="0.5"/>
+      <parameters key="voiceindex" value="0.0"/>
+    </state>
+    <colours map="7" background="0" foreground="ffff0000" duration="667e7a7d"
+             text="ffff0000" shadow="ff000000"/>
+    <labelLayout position="12.0" justification="0"/>
+    <channelsLayout value="1"/>
+    <valueZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="22050.0"
+               minimumLength="1.192092895507812e-7" visibleRange_start="0.0"
+               visibleRange_end="819.9886376101217">
+      <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="3"
+            tickPowerBase="2.0" tickDivisionFactor="5.0"/>
+    </valueZoom>
+    <binZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="0.0"
+             minimumLength="0.0" visibleRange_start="0.0" visibleRange_end="0.0">
+      <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="3"
+            tickPowerBase="2.0" tickDivisionFactor="5.0"/>
+    </binZoom>
+  </tracks>
+  <tracks MiscModelVersion="131075" identifier="33c2018ef5a748d39c3a24cf6fea23f9"
+          name="Basic Pitch 2" input="" height="83" font="Nunito Sans; 14.0 Regular"
+          showInGroup="0" zoomValueMode="1" zoomLink="1">
+    <file path="" commit="">
+      <args/>
+    </file>
+    <description name="Basic Pitch" inputDomain="0" maker="Ircam" version="1"
+                 category="Pitch" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
+      <defaultState blockSize="1024" stepSize="0" windowType="3">
+        <parameters key="framethreshold" value="0.699999988079071"/>
+        <parameters key="minnoteduration" value="120.0"/>
+        <parameters key="onsetthreshold" value="0.5"/>
+        <parameters key="voiceindex" value="0.0"/>
+      </defaultState>
+      <parameters>
+        <value identifier="voiceindex" name="Voice Index" description="The index of the voice"
+               unit="" minValue="0.0" maxValue="23.0" defaultValue="0.0" isQuantized="1"
+               quantizeStep="1.0"/>
+      </parameters>
+      <parameters>
+        <value identifier="framethreshold" name="Frame Threshold" description="The frame's amplitude threshold"
+               unit="" minValue="0.05000000074505806" maxValue="0.949999988079071"
+               defaultValue="0.699999988079071" isQuantized="1" quantizeStep="0.009999999776482582"/>
+      </parameters>
+      <parameters>
+        <value identifier="onsetthreshold" name="Onset Threshold" description="The onset's amplitude threshold"
                unit="" minValue="0.05000000074505806" maxValue="0.949999988079071"
                defaultValue="0.5" isQuantized="1" quantizeStep="0.009999999776482582"/>
       </parameters>
@@ -4297,16 +4373,17 @@
     <key identifier="basicpitch:ircambasicpitch" feature="pitch"/>
     <state blockSize="1024" stepSize="0" windowType="3">
       <parameters key="framethreshold" value="0.2999999821186066"/>
-      <parameters key="minnoteduration" value="10.0"/>
+      <parameters key="minnoteduration" value="120.0"/>
       <parameters key="onsetthreshold" value="0.5"/>
+      <parameters key="voiceindex" value="1.0"/>
     </state>
-    <colours map="7" background="0" foreground="ffff0000" duration="667e7a7d"
-             text="ffff0000" shadow="ff000000"/>
+    <colours map="7" background="0" foreground="ff001aff" duration="667e7a7d"
+             text="ff001aff" shadow="ff000000"/>
     <labelLayout position="12.0" justification="0"/>
     <channelsLayout value="1"/>
     <valueZoom MiscModelVersion="131075" globalRange_start="0.0" globalRange_end="22050.0"
-               minimumLength="1.192092895507812e-7" visibleRange_start="28.53446972253931"
-               visibleRange_end="366.0150924840399">
+               minimumLength="1.192092895507812e-7" visibleRange_start="0.0"
+               visibleRange_end="819.9886376101217">
       <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="3"
             tickPowerBase="2.0" tickDivisionFactor="5.0"/>
     </valueZoom>
