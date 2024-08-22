@@ -300,7 +300,7 @@ Bpvp::Plugin::ParameterList Bpvp::Plugin::getParameterDescriptors() const
     {
         ParameterDescriptor param;
         param.identifier = "framethreshold";
-        param.name = "Frame Theshold";
+        param.name = "Frame Threshold";
         param.description = "The frame's amplitude threshold";
         param.unit = "";
         param.minValue = 0.05f;
@@ -313,7 +313,7 @@ Bpvp::Plugin::ParameterList Bpvp::Plugin::getParameterDescriptors() const
     {
         ParameterDescriptor param;
         param.identifier = "onsetthreshold";
-        param.name = "Onset Theshold";
+        param.name = "Onset Threshold";
         param.description = "The onset's amplitude threshold";
         param.unit = "";
         param.minValue = 0.05f;
