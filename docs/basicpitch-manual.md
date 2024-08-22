@@ -19,7 +19,9 @@
 
 ## Introduction
 
-The Basic Pitch plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/). The Basic Pitch plugin analyses the pitch in the audio stream and generates curves corresponding to the fequencies. The Basic Pitch is embedded in the plugin.
+The Basic Pitch plugin is an implementation of the [Basic Pitch](https://github.com/spotify/basic-pitch) automatic music transcription (AMT) library, using lightweight neural network, developed by [Spotify's Audio Intelligence Lab](https://research.atspotify.com/audio-intelligence/) as a [Vamp plugin](https://www.vamp-plugins.org/). The Basic Pitch model is embedded in the plugin. 
+
+The Basic Pitch plugin provides three parameters, `Frame Threshold`, `Onset Threshold` and `Minimum Note Duration`, which allow you to control the sensitivity of the pitch detection. The Basic Pitch plugin analyses the pitch in the audio stream and generates curves corresponding to the fequencies. The amplitude of the note is associated with each result, enabling the data to be filtered according to a threshold.
 
 The Basic Pitch Vamp Plugin has been designed for use in the free audio analysis application [Partiels](https://forum.ircam.fr/projects/detail/partiels/).
 
@@ -38,8 +40,9 @@ Use the installer for your operating system. The plugin dynamic library (*basicp
 
 ## Credits
 
-- **[Basic Pitch Vamp plugin](https://www.ircam.fr/)** by Pierre Guillot at IRCAM IMR Department
-- **[Basic Pitch](https://github.com/spotify/basic-pitch)** model by Spotify's Audio Intelligence Lab
+- **[Basic Pitch Vamp plugin](https://www.ircam.fr/)** by Pierre Guillot at IRCAM IMR Department.
+- **[Basic Pitch](https://github.com/spotify/basic-pitch)** model by Spotify's Audio Intelligence Lab.
+- **[TensorFlow](https://github.com/tensorflow/tensorflow)** originally developed by Google Brain team.
 - **[Vamp SDK](https://github.com/vamp-plugins/vamp-plugin-sdk)** by Chris Cannam, copyright (c) 2005-2024 Chris Cannam and Centre for Digital Music, Queen Mary, University of London.
 - **[Ircam Vamp Extension](https://github.com/Ircam-Partiels/ircam-vamp-extension)** by Pierre Guillot at [IRCAM IMR department](https://www.ircam.fr/).  
 
