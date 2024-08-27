@@ -164,6 +164,14 @@ else()
   message(STATUS "Manual target cannot be generated because mdpdf is not found")
 endif()
 
+### Publishing ###
+set(PROJECT_URL "https://github.com/Ircam-Partiels/basic-pitch-vamp-plugin")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/basicpitch-release.md "## Downloads\n")
+file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/basicpitch-release.md "- [Basic-Pitch-Linux.tar.gz](${PROJECT_URL}/releases/download/${BPVP_BUILD_TAG}/Basic-Pitch-Linux.tar.gz)\n")
+file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/basicpitch-release.md "- [Basic-Pitch-MacOS.pkg](${PROJECT_URL}/releases/download/${BPVP_BUILD_TAG}/Basic-Pitch-MacOS.pkg)\n")
+file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/basicpitch-release.md "- [Basic-Pitch-Windows.exe](${PROJECT_URL}/releases/download/${BPVP_BUILD_TAG}/Basic-Pitch-Windows.exe)\n")
+file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/basicpitch-release.md "- [Basic-Pitch-Manual.zip](${PROJECT_URL}/releases/download/${BPVP_BUILD_TAG}/Basic-Pitch-Manual.zip)\n") 
+
 ### Install ###
 if(APPLE)
   install(TARGETS bpvp RUNTIME LIBRARY DESTINATION "~/Library/Audio/Plug-Ins/Vamp/")
