@@ -185,7 +185,7 @@ bool Bpvp::Plugin::initialise(size_t channels, size_t stepSize, size_t blockSize
 
 std::string Bpvp::Plugin::getIdentifier() const
 {
-    return "ircambasicpitch";
+    return "basicpitch";
 }
 
 std::string Bpvp::Plugin::getName() const

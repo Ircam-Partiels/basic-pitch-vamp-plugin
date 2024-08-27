@@ -33,7 +33,7 @@ The Basic Pitch Vamp Plugin has been designed for use in the free audio analysis
 
 ## Installation
 
-Use the installer for your operating system. The plugin dynamic library (*basicpitch.dylib* for MacOS, *basicpitch.dll* for Windows and *basicpitch.so* for Linux) and the category file (*basicpitch.cat*) will be installed in your operating system's Vamp plugin installation directory:
+Use the installer for your operating system. The plugin dynamic library (*ircambasicpitch.dylib* for MacOS, *ircambasicpitch.dll* for Windows and *ircambasicpitch.so* for Linux) and the category file (*ircambasicpitch.cat*) will be installed in your operating system's Vamp plugin installation directory:
 - Linux: `~/vamp`
 - MacOS: `/Library/Audio/Plug-Ins/Vamp`
 - Windows: `C:\Program Files\Vamp`

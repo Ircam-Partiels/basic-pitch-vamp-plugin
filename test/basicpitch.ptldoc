@@ -13,7 +13,7 @@
     <grid MiscModelVersion="131075" tickReference="0.0" mainTickInterval="0"
           tickPowerBase="2.0" tickDivisionFactor="10.0"/>
   </timeZoom>
-  <transport MiscModelVersion="131075" startPlayhead="13.73160651258433" looping="0"
+  <transport MiscModelVersion="131075" startPlayhead="20.81624015154716" looping="0"
              loopRange_start="0.0" loopRange_end="0.0" stopAtLoopEnd="0" autoScroll="1"
              gain="1.0" magnetize="0"/>
   <groups MiscModelVersion="131075" identifier="0cbca15363f34e82af09c599fdff328c"
@@ -4258,7 +4258,7 @@
       <args/>
     </file>
     <description name="Basic Pitch" inputDomain="0" maker="Ircam" version="1"
-                 category="Pitch" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
+                 category="" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
       <defaultState blockSize="1024" stepSize="0" windowType="3">
         <parameters key="framethreshold" value="0.699999988079071"/>
         <parameters key="minnoteduration" value="120.0"/>
@@ -4299,7 +4299,7 @@
              isQuantized="0" quantizeStep="0.0" sampleType="0" sampleRate="0.0"
              hasDuration="0"/>
     </description>
-    <key identifier="basicpitch:ircambasicpitch" feature="pitch"/>
+    <key identifier="ircambasicpitch:ircambasicpitch" feature="pitch"/>
     <state blockSize="1024" stepSize="0" windowType="3">
       <parameters key="framethreshold" value="0.5"/>
       <parameters key="minnoteduration" value="100.0"/>
@@ -4329,7 +4329,7 @@
       <args/>
     </file>
     <description name="Basic Pitch" inputDomain="0" maker="Ircam" version="1"
-                 category="Pitch" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
+                 category="" details="Automatic speech recognition using OpenAI's Whisper model.&#10;Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.">
       <defaultState blockSize="1024" stepSize="0" windowType="3">
         <parameters key="framethreshold" value="0.699999988079071"/>
         <parameters key="minnoteduration" value="120.0"/>
@@ -4370,7 +4370,7 @@
              isQuantized="0" quantizeStep="0.0" sampleType="0" sampleRate="0.0"
              hasDuration="0"/>
     </description>
-    <key identifier="basicpitch:ircambasicpitch" feature="pitch"/>
+    <key identifier="ircambasicpitch:ircambasicpitch" feature="pitch"/>
     <state blockSize="1024" stepSize="0" windowType="3">
       <parameters key="framethreshold" value="0.2999999821186066"/>
       <parameters key="minnoteduration" value="120.0"/>
