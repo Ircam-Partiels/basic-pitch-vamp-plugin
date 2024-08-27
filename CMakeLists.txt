@@ -124,8 +124,8 @@ ive_prepare_plugin_target(bpvp)
 target_compile_definitions(bpvp PRIVATE BPVP_PLUGIN_VERSION=${PROJECT_VERSION_MAJOR})
 target_link_libraries(bpvp PRIVATE tensorflow-lite)
 
-add_custom_command(TARGET bpvp POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resource/basicpitch.cat "$<IF:$<CONFIG:Debug>,${CMAKE_CURRENT_BINARY_DIR}/Debug/basicpitch.cat,${CMAKE_CURRENT_BINARY_DIR}/Release/basicpitch.cat>")
-set_target_properties(bpvp PROPERTIES LIBRARY_OUTPUT_NAME basicpitch)
+add_custom_command(TARGET bpvp POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resource/ircambasicpitch.cat "$<IF:$<CONFIG:Debug>,${CMAKE_CURRENT_BINARY_DIR}/Debug/ircambasicpitch.cat,${CMAKE_CURRENT_BINARY_DIR}/Release/ircambasicpitch.cat>")
+set_target_properties(bpvp PROPERTIES LIBRARY_OUTPUT_NAME ircambasicpitch)
 vpp_add_plugin(bpvp)
 
 find_program(PARTIELS_EXE "Partiels" HINTS ${PARTIELS_EXE_HINT_PATH} NO_CACHE)
@@ -167,13 +167,13 @@ endif()
 ### Install ###
 if(APPLE)
   install(TARGETS bpvp RUNTIME LIBRARY DESTINATION "~/Library/Audio/Plug-Ins/Vamp/")
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/basicpitch.cat DESTINATION "~/Library/Audio/Plug-Ins/Vamp/")
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/ircambasicpitch.cat DESTINATION "~/Library/Audio/Plug-Ins/Vamp/")
 elseif(UNIX)
   install(TARGETS bpvp RUNTIME LIBRARY DESTINATION "~/vamp/")
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/basicpitch.cat DESTINATION "~/vamp/")
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/ircambasicpitch.cat DESTINATION "~/vamp/")
 elseif(WIN32)
   install(TARGETS bpvp RUNTIME DESTINATION "$ENV{PROGRAMFILES}/Vamp Plugins/" PERMISSIONS OWNER_WRITE)
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/basicpitch.cat DESTINATION "$ENV{PROGRAMFILES}/Vamp Plugins/")
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resource/ircambasicpitch.cat DESTINATION "$ENV{PROGRAMFILES}/Vamp Plugins/")
 endif()
 
 ### Testing ###
