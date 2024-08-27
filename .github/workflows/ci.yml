@@ -7,6 +7,8 @@ env:
   build_type: ${{ contains(github.event.head_commit.message, '[debug]') && 'Debug' || 'Release' }}
   # Checks whether the event corresponds to a tag to activate the automatic creation of a release.
   is_tagged: ${{ startsWith(github.ref, 'refs/tags/') }}
+  # The name of the version
+  tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || ''}}
 
 jobs:
   # Checks source code formatting with clang before compiling.
@@ -52,7 +54,7 @@ jobs:
         enableCrossOsArchive: true
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }}
     - name: Build
       run: cmake --build ${{ github.workspace }}/build
     - name: Test
@@ -70,6 +72,7 @@ jobs:
         prerelease: true
         fail_on_unmatched_files: true
         generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: ${{ github.workspace }}/package/Basic-Pitch-Linux.tar.gz
   # Compiles, tests and packages the plugin for Windows.
   Windows:
@@ -88,7 +91,7 @@ jobs:
     - name: Prepare
       run: powershell -Command "& {[System.IO.File]::WriteAllBytes('${{ github.workspace }}\cert.p12', [System.Convert]::FromBase64String('${{ secrets.SECTIGO_CERT_P12}}'))}"
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G "Visual Studio 17 2022" -A x64 -DVPP_NOTARIZE=ON -DVPP_CODESIGN_WINDOWS_KEYFILE=${{ github.workspace }}\cert.p12 -DVPP_CODESIGN_WINDOWS_KEYPASSWORD=${{ secrets.DEV_ID_PASSWORD }} -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+      run: cmake -B ${{ github.workspace }}/build -G "Visual Studio 17 2022" -A x64 -DVPP_NOTARIZE=ON -DVPP_CODESIGN_WINDOWS_KEYFILE=${{ github.workspace }}\cert.p12 -DVPP_CODESIGN_WINDOWS_KEYPASSWORD=${{ secrets.DEV_ID_PASSWORD }} -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG="${{ env.tag_name }}"
     - name: Build
       run: cmake --build ${{ github.workspace }}/build --config ${{ env.build_type }}
     - name: Test
@@ -106,6 +109,7 @@ jobs:
         prerelease: true
         fail_on_unmatched_files: true
         generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
   # Compiles, tests and packages the plugin for MacOS.
   MacOS:
@@ -136,7 +140,7 @@ jobs:
         security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k ${{ secrets.DEV_ID_PASSWORD }} buildagent >/dev/null
         xcrun notarytool store-credentials "notary-installer" --apple-id ${{ secrets.DEV_USER_APPLE_ID }} --team-id ${{ secrets.DEV_TEAM_APPLE_ID }} --password ${{ secrets.DEV_SPEC_APP_PASSWORD }} >/dev/null
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G "Xcode" -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+      run: cmake -B ${{ github.workspace }}/build -G "Xcode" -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }}
     - name: Build
       run: |
         security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
@@ -157,6 +161,7 @@ jobs:
         prerelease: true
         fail_on_unmatched_files: true
         generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
   # Generates the documentation.
   Doc:
@@ -177,7 +182,7 @@ jobs:
         key: bpvp-model
         enableCrossOsArchive: true
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }}
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }}
     - name: Build
       run: |
         cmake --build build --target bpvp_manual
@@ -195,4 +200,5 @@ jobs:
         prerelease: true
         fail_on_unmatched_files: true
         generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: ${{ github.workspace }}/Basic-Pitch-Manual.zip
