@@ -60,7 +60,7 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Artifact
-      uses: actions/upload-artifact@v4.3.6
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Basic-Pitch-Linux
         path: ${{ github.workspace }}/package/Basic-Pitch-Linux.tar.gz
@@ -97,7 +97,7 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Artifact
-      uses: actions/upload-artifact@v4.3.6
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Basic-Pitch-Windows
         path: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
@@ -149,7 +149,7 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Artifact
-      uses: actions/upload-artifact@v4.3.6
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Basic-Pitch-MacOS
         path: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
@@ -188,7 +188,7 @@ jobs:
         cmake --build build --target bpvp_manual
         zip -jr Basic-Pitch-Manual.zip ${{ github.workspace }}/build/Manual
     - name: Artifact
-      uses: actions/upload-artifact@v4.3.6
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Basic-Pitch-Manual
         path: ${{ github.workspace }}/build/Manual
