@@ -195,7 +195,7 @@ std::string Bpvp::Plugin::getName() const
 
 std::string Bpvp::Plugin::getDescription() const
 {
-    return "Automatic speech recognition using OpenAI's Whisper model.";
+    return "Automatic music transcription using lightweight neural network by Spotify's Audio Intelligence Lab.";
 }
 
 std::string Bpvp::Plugin::getMaker() const
