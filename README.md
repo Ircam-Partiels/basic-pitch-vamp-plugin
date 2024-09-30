@@ -24,7 +24,7 @@ Launch the Partiels application. In a new or existing document, create a new ana
 
 The compilation system is based on [CMake](https://cmake.org/), for example:
 ```
-cmake . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ctest -C Debug -VV --test-dir build
 ```
