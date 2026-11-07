@@ -1,0 +1,238 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  # Enables the sccache GitHub Actions storage backend to keep the compiler cache between builds.
+  SCCACHE_GHA_ENABLED: "true"
+  # Checks for the '[debug]' string in the commit message to compile as debug instead of release.
+  build_type: ${{ contains(github.event.head_commit.message, '[debug]') && 'Debug' || 'Release' }}
+  # Checks whether the event corresponds to a tag to activate the automatic creation of a release.
+  is_tagged: ${{ startsWith(github.ref, 'refs/tags/') }}
+  # The name of the version
+  tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || ''}}
+
+jobs:
+  # Checks source code formatting with clang before compiling.
+  Format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: Check
+      uses: jidicula/clang-format-action@v4.18.0
+      with:
+        clang-format-version: '19'
+        check-path: '.'
+  # Creates a cache for the tflite model downloaded from the Spotify Basic Pitch
+  # repository and copied into the Resources folder of the Vamp bundle.
+  # Configures the project in models-only mode so that neither TensorFlow
+  # nor the other dependencies are required to download the model.
+  Cache:
+    runs-on: ubuntu-latest
+    needs: Format
+    steps:
+    - uses: actions/checkout@v7
+    - name: Cache
+      uses: actions/cache@v6
+      with:
+        path: ./build/models
+        key: bpvp-model
+        enableCrossOsArchive: true
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_MODELS_ONLY=ON
+  # Compiles, tests and packages the plugin for Ubuntu.
+  Ubuntu:
+    runs-on: ubuntu-22.04
+    needs: Cache
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v6
+      with:
+        path: ./build/models
+        key: bpvp-model
+        enableCrossOsArchive: true
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Sccache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+    - name: Build
+      run: cmake --build ${{ github.workspace }}/build
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Package
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip --format=zip ircambasicpitch.vamp
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Vamp-Linux
+        path: ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Linux
+        path: ${{ github.workspace }}/build/Basic-Pitch
+    - name: Release
+      uses: softprops/action-gh-release@v3
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
+        files: |
+          ${{ github.workspace }}/package/Basic-Pitch-Linux.zip
+          ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip
+  # Compiles, tests and packages the plugin for Windows.
+  Windows:
+    runs-on: windows-latest
+    needs: Cache
+    steps:
+    - run: git config --global core.longpaths true
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v6
+      with:
+        path: ./build/models
+        key: bpvp-model
+        enableCrossOsArchive: true
+    - name: Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Sccache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG="${{ env.tag_name }}" -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+    - name: Build
+      run: cmake --build ${{ github.workspace }}/build
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Package
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip --format=zip ircambasicpitch.vamp
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Vamp-Windows
+        path: ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Windows
+        path: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
+    - name: Release
+      uses: softprops/action-gh-release@v3
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
+        files: |
+          ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
+          ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip
+  # Compiles, tests and packages the plugin for MacOS.
+  MacOS:
+    runs-on: macos-latest
+    needs: Cache
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    - name: Cache
+      uses: actions/cache@v6
+      with:
+        path: ./build/models
+        key: bpvp-model
+        enableCrossOsArchive: true
+    - name: Prepare
+      run: |
+        security create-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security list-keychains -s buildagent && security default-keychain -s buildagent
+        echo ${{ secrets.DEV_ID_APP_CERT }} | base64 --decode > ./cert.p12
+        security import ./cert.p12 -P ${{ secrets.DEV_ID_PASSWORD }} -A -t cert -f pkcs12 -k buildagent -T /usr/bin/codesign >/dev/null
+        rm ./cert.p12
+        echo ${{ secrets.DEV_ID_INST_CERT }} | base64 --decode > ./cert.p12
+        security import ./cert.p12 -P ${{ secrets.DEV_ID_PASSWORD }} -A -t cert -f pkcs12 -k buildagent -T /usr/bin/codesign >/dev/null
+        rm ./cert.p12
+        security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k ${{ secrets.DEV_ID_PASSWORD }} buildagent >/dev/null
+        xcrun notarytool store-credentials "notary-installer" --apple-id ${{ secrets.DEV_USER_APPLE_ID }} --team-id ${{ secrets.DEV_TEAM_APPLE_ID }} --password ${{ secrets.DEV_SPEC_APP_PASSWORD }} >/dev/null
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Sccache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+    - name: Build
+      run: |
+        security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
+        security set-keychain-settings -lut 7200 buildagent
+        cmake --build ${{ github.workspace }}/build
+    - name: Test
+      run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
+    - name: Package
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip --format=zip ircambasicpitch.vamp
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Vamp-MacOS
+        path: ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-MacOS
+        path: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
+    - name: Release
+      uses: softprops/action-gh-release@v3
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
+        files: |
+          ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
+          ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip
+  # Generates the documentation.
+  # Configures the project in manual-only mode so that neither the model,
+  # TensorFlow nor the submodules are required to generate the documentation.
+  Doc:
+    runs-on: ubuntu-latest
+    needs: Format
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 20
+    - run: npm install -g git+https://github.com/elliotblackburn/mdpdf.git#3.0.4
+    - name: Configure
+      run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_MANUAL_ONLY=ON -DBPVP_BUILD_TAG=${{ env.tag_name }}
+    - name: Build
+      run: |
+        cmake --build build --target bpvp_manual
+        zip -jr Basic-Pitch-Manual.zip ${{ github.workspace }}/build/Manual
+    - name: Artifact
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: Basic-Pitch-Manual
+        path: ${{ github.workspace }}/build/Manual
+    - name: Release
+      uses: softprops/action-gh-release@v3
+      if: ${{ env.is_tagged == 'true' }}
+      with:
+        draft: true
+        prerelease: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        body_path: ${{ github.workspace }}/build/basicpitch-release.md
+        files: ${{ github.workspace }}/Basic-Pitch-Manual.zip
