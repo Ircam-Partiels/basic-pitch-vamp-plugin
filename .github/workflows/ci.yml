@@ -64,17 +64,17 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Package
-      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip --format=zip ircambasicpitch.vamp
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/BasicPitch-Vamp-Linux.zip --format=zip ircambasicpitch.vamp
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Vamp-Linux
-        path: ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip
+        name: BasicPitch-Vamp-Linux
+        path: ${{ github.workspace }}/BasicPitch-Vamp-Linux.zip
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Linux
-        path: ${{ github.workspace }}/build/Basic-Pitch
+        name: BasicPitch-Linux
+        path: ${{ github.workspace }}/build/BasicPitch
     - name: Release
       uses: softprops/action-gh-release@v3
       if: ${{ env.is_tagged == 'true' }}
@@ -85,8 +85,8 @@ jobs:
         generate_release_notes: true
         body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: |
-          ${{ github.workspace }}/package/Basic-Pitch-Linux.zip
-          ${{ github.workspace }}/Basic-Pitch-Vamp-Linux.zip
+          ${{ github.workspace }}/package/BasicPitch-Linux.zip
+          ${{ github.workspace }}/BasicPitch-Vamp-Linux.zip
   # Compiles, tests and packages the plugin for Windows.
   Windows:
     runs-on: windows-latest
@@ -116,17 +116,17 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Package
-      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip --format=zip ircambasicpitch.vamp
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/BasicPitch-Vamp-Windows.zip --format=zip ircambasicpitch.vamp
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Vamp-Windows
-        path: ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip
+        name: BasicPitch-Vamp-Windows
+        path: ${{ github.workspace }}/BasicPitch-Vamp-Windows.zip
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Windows
-        path: ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
+        name: BasicPitch-Windows
+        path: ${{ github.workspace }}/package/BasicPitch-Windows.exe
     - name: Release
       uses: softprops/action-gh-release@v3
       if: ${{ env.is_tagged == 'true' }}
@@ -137,8 +137,8 @@ jobs:
         generate_release_notes: true
         body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: |
-          ${{ github.workspace }}/package/Basic-Pitch-Windows.exe
-          ${{ github.workspace }}/Basic-Pitch-Vamp-Windows.zip
+          ${{ github.workspace }}/package/BasicPitch-Windows.exe
+          ${{ github.workspace }}/BasicPitch-Vamp-Windows.zip
   # Compiles, tests and packages the plugin for MacOS.
   MacOS:
     runs-on: macos-latest
@@ -180,17 +180,17 @@ jobs:
     - name: Test
       run: ctest -C ${{ env.build_type }} -VV --test-dir ${{ github.workspace }}/build
     - name: Package
-      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip --format=zip ircambasicpitch.vamp
+      run: cmake -E chdir ${{ github.workspace }}/build/${{ env.build_type }} cmake -E tar cf ${{ github.workspace }}/BasicPitch-Vamp-MacOS.zip --format=zip ircambasicpitch.vamp
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Vamp-MacOS
-        path: ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip
+        name: BasicPitch-Vamp-MacOS
+        path: ${{ github.workspace }}/BasicPitch-Vamp-MacOS.zip
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-MacOS
-        path: ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
+        name: BasicPitch-MacOS
+        path: ${{ github.workspace }}/package/BasicPitch-MacOS.pkg
     - name: Release
       uses: softprops/action-gh-release@v3
       if: ${{ env.is_tagged == 'true' }}
@@ -201,8 +201,8 @@ jobs:
         generate_release_notes: true
         body_path: ${{ github.workspace }}/build/basicpitch-release.md
         files: |
-          ${{ github.workspace }}/package/Basic-Pitch-MacOS.pkg
-          ${{ github.workspace }}/Basic-Pitch-Vamp-MacOS.zip
+          ${{ github.workspace }}/package/BasicPitch-MacOS.pkg
+          ${{ github.workspace }}/BasicPitch-Vamp-MacOS.zip
   # Generates the documentation.
   # Configures the project in manual-only mode so that neither the model,
   # TensorFlow nor the submodules are required to generate the documentation.
@@ -220,11 +220,11 @@ jobs:
     - name: Build
       run: |
         cmake --build build --target bpvp_manual
-        zip -jr Basic-Pitch-Manual.zip ${{ github.workspace }}/build/Manual
+        zip -jr BasicPitch-Manual.zip ${{ github.workspace }}/build/Manual
     - name: Artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: Basic-Pitch-Manual
+        name: BasicPitch-Manual
         path: ${{ github.workspace }}/build/Manual
     - name: Release
       uses: softprops/action-gh-release@v3
@@ -235,4 +235,4 @@ jobs:
         fail_on_unmatched_files: true
         generate_release_notes: true
         body_path: ${{ github.workspace }}/build/basicpitch-release.md
-        files: ${{ github.workspace }}/Basic-Pitch-Manual.zip
+        files: ${{ github.workspace }}/BasicPitch-Manual.zip
