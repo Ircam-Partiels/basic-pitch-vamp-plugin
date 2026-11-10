@@ -476,7 +476,7 @@ std::optional<Bpvp::Plugin::VoiceDescriptor> Bpvp::Plugin::getOutputVoiceDescrip
     }
     VoiceDescriptor d;
     d.identifier = "voices";
-    d.name = "Voices";
+    d.name = "Number of Voices";
     d.description = "The number of monophonic voices to output (the voices are ordered from the lowest to the highest)";
     d.unit = "";
     d.minValue = 1.0f;
