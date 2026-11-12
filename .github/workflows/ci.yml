@@ -11,6 +11,26 @@ env:
   is_tagged: ${{ startsWith(github.ref, 'refs/tags/') }}
   # The name of the version
   tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || ''}}
+  # The source directories of the dependencies cloned by CMake during the configuration
+  # (TensorFlow Lite and the Vamp SDK). They are cached so that the configuration does
+  # not depend on the availability of the remote servers (e.g. GitLab for Eigen). The
+  # entries are listed one level deep so that the large .git directories can be excluded.
+  deps_paths: |
+    build/_deps/vamp-plugin-sdk-src/*
+    build/abseil-cpp/*
+    build/cpuinfo/*
+    build/eigen/*
+    build/farmhash/*
+    build/fft2d/*
+    build/flatbuffers/*
+    build/fp16_headers/*
+    build/gemmlowp/*
+    build/ml_dtypes/*
+    build/neon2sse/*
+    build/protobuf/*
+    build/ruy/*
+    build/xnnpack/*
+    !build/**/.git
 
 jobs:
   # Checks source code formatting with clang before compiling.
@@ -57,8 +77,20 @@ jobs:
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Sccache
       uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Dependencies
+      id: deps
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: bpvp-deps-${{ runner.os }}-${{ hashFiles('tensorflow/tensorflow/lite/tools/cmake/modules/**', 'ircam-vamp-extension/CMakeLists.txt', 'ircam-vamp-extension/Patchs/**') }}
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -DFETCHCONTENT_FULLY_DISCONNECTED=${{ steps.deps.outputs.cache-hit == 'true' && 'ON' || 'OFF' }} -Wno-dev
+    - name: Save Dependencies
+      if: ${{ steps.deps.outputs.cache-hit != 'true' }}
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: ${{ steps.deps.outputs.cache-primary-key }}
     - name: Build
       run: cmake --build ${{ github.workspace }}/build
     - name: Test
@@ -109,8 +141,20 @@ jobs:
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Sccache
       uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Dependencies
+      id: deps
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: bpvp-deps-${{ runner.os }}-${{ hashFiles('tensorflow/tensorflow/lite/tools/cmake/modules/**', 'ircam-vamp-extension/CMakeLists.txt', 'ircam-vamp-extension/Patchs/**') }}
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG="${{ env.tag_name }}" -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG="${{ env.tag_name }}" -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -DFETCHCONTENT_FULLY_DISCONNECTED=${{ steps.deps.outputs.cache-hit == 'true' && 'ON' || 'OFF' }} -Wno-dev
+    - name: Save Dependencies
+      if: ${{ steps.deps.outputs.cache-hit != 'true' }}
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: ${{ steps.deps.outputs.cache-primary-key }}
     - name: Build
       run: cmake --build ${{ github.workspace }}/build
     - name: Test
@@ -170,8 +214,20 @@ jobs:
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Sccache
       uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Dependencies
+      id: deps
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: bpvp-deps-${{ runner.os }}-${{ hashFiles('tensorflow/tensorflow/lite/tools/cmake/modules/**', 'ircam-vamp-extension/CMakeLists.txt', 'ircam-vamp-extension/Patchs/**') }}
     - name: Configure
-      run: cmake -B ${{ github.workspace }}/build -G Ninja -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -Wno-dev
+      run: cmake -B ${{ github.workspace }}/build -G Ninja -DVPP_CODESIGN_APPLE_KEYCHAIN_PROFILE_INSTALLER="notary-installer" -DVPP_NOTARIZE=ON -DCMAKE_BUILD_TYPE=${{ env.build_type }} -DBPVP_BUILD_TAG=${{ env.tag_name }} -DBPVP_ENABLE_DEBUG=OFF -DBPVP_USE_SCCACHE=ON -DFETCHCONTENT_FULLY_DISCONNECTED=${{ steps.deps.outputs.cache-hit == 'true' && 'ON' || 'OFF' }} -Wno-dev
+    - name: Save Dependencies
+      if: ${{ steps.deps.outputs.cache-hit != 'true' }}
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ env.deps_paths }}
+        key: ${{ steps.deps.outputs.cache-primary-key }}
     - name: Build
       run: |
         security unlock-keychain -p ${{ secrets.DEV_ID_PASSWORD }} buildagent
