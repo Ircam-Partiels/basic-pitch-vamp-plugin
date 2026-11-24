@@ -1,0 +1,171 @@
+Basic Pitch Vamp Plugin - Third-party notices
+=============================================
+
+The Basic Pitch Vamp Plugin is distributed under the MIT License (see
+Basic-Pitch-Vamp-Plugin.txt). It includes the following third-party software
+and models, which remain under their own licenses. The full texts of the
+licenses are in this folder.
+
+Software
+--------
+
+- TensorFlow Lite (https://github.com/tensorflow/tensorflow)
+  Copyright 2015-2025 The TensorFlow Authors
+  License: Apache License 2.0 (tensorflow.txt)
+  The TensorFlow license file also contains the notice of the code derived
+  from Caffe, Copyright (c) 2014 The Regents of the University of California
+  and the respective contributors, BSD 2-Clause license (tensorflow.txt).
+
+- Abseil (https://github.com/abseil/abseil-cpp), used by TensorFlow Lite
+  Copyright 2017-2025 The Abseil Authors
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+- Eigen (https://gitlab.com/libeigen/eigen), used by TensorFlow Lite
+  Copyright the Eigen authors
+  License: Mozilla Public License 2.0 (eigen.txt)
+  Only the MPL 2.0 licensed code of Eigen is used (EIGEN_MPL2_ONLY). Eigen is
+  used without modification, its source code is available at
+  https://gitlab.com/libeigen/eigen.
+
+- FarmHash (https://github.com/google/farmhash), used by TensorFlow Lite
+  Copyright (c) 2014 Google, Inc.
+  License: MIT License (farmhash.txt)
+
+- fft2d (General Purpose FFT Package,
+  http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html), used by TensorFlow Lite
+  Copyright(C) 1996-2001 Takuya OOURA (fftsg)
+  Copyright(C) 1997,2001 Takuya OOURA (fftsg2d)
+  License: "You may use, copy, modify this code for any purpose and without
+  fee. You may distribute this ORIGINAL package." (fft2d.txt)
+
+- FlatBuffers (https://github.com/google/flatbuffers), used by TensorFlow Lite
+  Copyright 2014-2023 Google Inc.
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+- gemmlowp (https://github.com/google/gemmlowp), used by TensorFlow Lite
+  Copyright 2015-2018 The Gemmlowp Authors
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+- ruy (https://github.com/google/ruy), used by TensorFlow Lite
+  Copyright 2019-2022 Google LLC
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+- XNNPACK (https://github.com/google/XNNPACK), used by TensorFlow Lite
+  Copyright (c) Facebook, Inc. and its affiliates
+  Copyright 2019 Google LLC
+  License: BSD 3-Clause license (xnnpack.txt)
+
+- cpuinfo (https://github.com/pytorch/cpuinfo), used by TensorFlow Lite
+  Copyright (c) 2019 Google LLC
+  Copyright (c) 2017-2018 Facebook Inc.
+  Copyright (C) 2012-2017 Georgia Institute of Technology
+  Copyright (C) 2010-2012 Marat Dukhan
+  License: BSD 2-Clause license (cpuinfo.txt)
+
+- pthreadpool (https://github.com/google/pthreadpool), used by XNNPACK
+  Copyright 2019 Google LLC
+  Copyright (c) 2017 Facebook Inc.
+  Copyright (c) 2015-2017 Georgia Institute of Technology
+  License: BSD 2-Clause license (pthreadpool.txt)
+
+- FP16 (https://github.com/Maratyszcza/FP16), used by XNNPACK
+  Copyright (c) 2017 Facebook Inc.
+  Copyright (c) 2017 Georgia Institute of Technology
+  Copyright 2019 Google LLC
+  License: MIT License (fp16.txt)
+
+- FXdiv (https://github.com/Maratyszcza/FXdiv), used by pthreadpool
+  Copyright (c) 2017 Facebook Inc.
+  Copyright (c) 2016-2017 Marat Dukhan
+  License: MIT License (fxdiv.txt)
+
+- KleidiAI (https://github.com/ARM-software/kleidiai), used by XNNPACK on
+  64-bit ARM processors only
+  Copyright 2024-2025 Arm Limited and/or its affiliates
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+- ARM_NEON_2_x86_SSE (https://github.com/intel/ARM_NEON_2_x86_SSE), used by
+  TensorFlow Lite and XNNPACK in some builds for x86 processors only
+  (neon2sse.txt is only present in these builds)
+  Copyright (C) 2012-2020 Intel Corporation
+  License: BSD-style license (neon2sse.txt)
+
+- Vamp Plugin SDK (https://github.com/vamp-plugins/vamp-plugin-sdk)
+  Copyright (c) 2005-2006 Chris Cannam
+  Copyright (c) 2006-2024 Queen Mary, University of London
+  License: MIT-style license (vamp-plugin-sdk.txt)
+  The Vamp Plugin SDK contains KissFFT, Copyright (c) 2003-2010 Mark Borgerding,
+  BSD 3-Clause license (vamp-plugin-sdk.txt)
+
+- Ircam Vamp Extension (https://github.com/Ircam-Partiels/ircam-vamp-extension)
+  Copyright (c) 2024 Pierre Guillot, IRCAM
+  License: MIT License (ircam-vamp-extension.txt)
+
+- JUCE (https://github.com/juce-framework/JUCE)
+  The resampler of the plugin is adapted from the Lagrange interpolator
+  (juce_LagrangeInterpolator.cpp and juce_GenericInterpolator.h) of the
+  juce_audio_basics module of JUCE 7, distributed under the ISC license:
+
+    Copyright (c) 2022 - Raw Material Software Limited
+
+    The code included in this file is provided under the terms of the ISC license
+    http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+    To use, copy, modify, and/or distribute this software for any purpose with or
+    without fee is hereby granted provided that the above copyright notice and
+    this permission notice appear in all copies.
+
+    JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+    EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+    DISCLAIMED.
+
+Models
+------
+
+The model embedded in the Resources/models folder of the plugin bundle
+(nmp.tflite) is the model of Basic Pitch (https://github.com/spotify/basic-pitch)
+developed by Spotify's Audio Intelligence Lab. It is distributed without
+modification under the Apache License 2.0 (Apache-2.0.txt). The pre-processing
+of the audio, the post-processing of the outputs of the model and the creation
+of the notes of the plugin are ported from the Basic Pitch Python library
+(basic_pitch.inference and basic_pitch.note_creation), also distributed under
+the Apache License 2.0.
+
+- nmp.tflite (ICASSP 2022 model, Basic Pitch v0.4.0)
+  https://github.com/spotify/basic-pitch/tree/v0.4.0/basic_pitch/saved_models/icassp_2022
+  Copyright 2022 Spotify AB
+  License: Apache License 2.0 (Apache-2.0.txt)
+
+The NOTICE file of Basic Pitch
+(https://github.com/spotify/basic-pitch/blob/v0.4.0/NOTICE) is reproduced below:
+
+  Basic Pitch
+  Copyright 2022 Spotify AB
+
+  This product includes software developed at
+  Spotify AB (http://www.spotify.com/).
+
+  This product includes software from Librosa (ISC).
+  * Copyright (C) 2013--2017, librosa development team.
+
+  This product includes software from mir_eval (MIT)
+  * Copyright (C) 2014 Colin Raffel
+
+  This product includes software from numpy (BSD)
+  * Copyright (C) 2005-2022, NumPy Developers.
+
+  This product includes software from pretty-midi (MIT)
+  * Copyright (C) 2014 Colin Raffel
+
+  This product includes software from resampy (ISC)
+  * Copyright (C) 2016, Brian McFee
+
+  This product includes software from scipy (BSD)
+  * Copyright (C) 2001-2002 Enthought, Inc. 2003-2022, SciPy Developers
+
+  This product includes software from tensorflow (Apache 2.0)
+  * Copyright (C) 2019 Google, LLC <packages@tensorflow.org>
+
+  The tests for `basic-pitch` include audio files from the
+  Vocadito dataset liscened under Creative Commons
+  Attribution 4.0 International. The dataset can be found at:
+  https://zenodo.org/record/5578807#.YnRm5vPMKDU

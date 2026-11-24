@@ -1,3 +1,25 @@
+// Parts of this file (the pre-processing of the audio and the post-processing
+// of the outputs of the model, see the comments referring to
+// basic_pitch.inference) are ported from the Basic Pitch Python library
+// (https://github.com/spotify/basic-pitch, v0.4.0, basic_pitch/inference.py):
+//
+// Copyright 2022 Spotify AB
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Modified by Pierre Guillot (IRCAM): translated from Python to C++ and adapted
+// to the Basic Pitch Vamp Plugin.
+
 #include "bpvp.h"
 #include "bpvp_convert.h"
 #include <cmath>
@@ -63,6 +85,22 @@
 
 #endif
 
+// The resampler (ResamplerUtils and Resampler) is adapted from the Lagrange
+// interpolator (juce_LagrangeInterpolator.cpp and juce_GenericInterpolator.h)
+// of the juce_audio_basics module of JUCE 7
+// (https://github.com/juce-framework/JUCE), distributed under the ISC license:
+//
+// Copyright (c) 2022 - Raw Material Software Limited
+//
+// The code included in this file is provided under the terms of the ISC license
+// http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+// To use, copy, modify, and/or distribute this software for any purpose with or
+// without fee is hereby granted provided that the above copyright notice and
+// this permission notice appear in all copies.
+//
+// JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+// EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+// DISCLAIMED.
 namespace ResamplerUtils
 {
     template <int k>
@@ -250,7 +288,7 @@ int Bpvp::Plugin::getPluginVersion() const
 
 std::string Bpvp::Plugin::getCopyright() const
 {
-    return "Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. All rights reserved.";
+    return "Basic Pitch model by Spotify's Audio Intelligence Lab. Basic Pitch Vamp Plugin by Pierre Guillot. Copyright 2024 Ircam. MIT License.";
 }
 
 Bpvp::Plugin::InputDomain Bpvp::Plugin::getInputDomain() const

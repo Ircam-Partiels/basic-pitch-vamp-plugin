@@ -170,7 +170,7 @@ endif()
 vpp_add_plugin(bpvp
   OUTPUT_NAME ircambasicpitch
   CATFILE ${CMAKE_CURRENT_SOURCE_DIR}/resource/ircambasicpitch.cat
-  COPYRIGHT "Copyright 2024 Ircam. All rights reserved"
+  COPYRIGHT "Copyright 2024 Ircam. MIT License"
   VERSION ${PROJECT_VERSION_MAJOR}
   INSTALL ON
   DEBUG ${BPVP_ENABLE_DEBUG}
@@ -185,6 +185,38 @@ vpp_add_plugin(bpvp
 add_custom_command(TARGET bpvp POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory "${BPVP_MODELS_DIR}" "$<TARGET_FILE_DIR:bpvp>/../Resources/models"
 )
+
+# The licenses of the plugin, of the third-party libraries and of the model are
+# copied into the Resources/licenses folder of the Vamp bundle (hence they are
+# distributed with the bundle and the installers). The ThirdPartyNotices.txt file
+# lists the components and refers to the license files. The Apache License 2.0
+# (copied from Abseil) also covers FlatBuffers, gemmlowp, ruy, KleidiAI and the
+# Basic Pitch model. The source directories of the dependencies of TensorFlow Lite
+# are populated during the configuration and are defined by cache variables.
+set(BPVP_LICENSES_DIR "$<TARGET_FILE_DIR:bpvp>/../Resources/licenses")
+add_custom_command(TARGET bpvp POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${BPVP_LICENSES_DIR}"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/resource/ThirdPartyNotices.txt" "${BPVP_LICENSES_DIR}/ThirdPartyNotices.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/Basic-Pitch-Vamp-Plugin.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${TENSORFLOW_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/tensorflow.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${absl_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/Apache-2.0.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${Eigen3_SOURCE_DIR}/COPYING.MPL2" "${BPVP_LICENSES_DIR}/eigen.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${FARMHASH_SOURCE_DIR}/COPYING" "${BPVP_LICENSES_DIR}/farmhash.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${FFT2D_SOURCE_DIR}/readme.txt" "${BPVP_LICENSES_DIR}/fft2d.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${XNNPACK_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/xnnpack.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CPUINFO_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/cpuinfo.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${PTHREADPOOL_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/pthreadpool.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${FP16_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/fp16.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${FXDIV_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/fxdiv.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${VAMP_SDK_PATH}/COPYING" "${BPVP_LICENSES_DIR}/vamp-plugin-sdk.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/ircam-vamp-extension/LICENSE" "${BPVP_LICENSES_DIR}/ircam-vamp-extension.txt"
+)
+# ARM_NEON_2_x86_SSE is only used by TensorFlow Lite and XNNPACK for x86 processors.
+if(TARGET NEON_2_SSE)
+  add_custom_command(TARGET bpvp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${NEON_2_SSE_SOURCE_DIR}/LICENSE" "${BPVP_LICENSES_DIR}/neon2sse.txt"
+  )
+endif()
 
 vpp_create_clang_format_targets(bpvp ${BPVP_SOURCES})
 endif()
