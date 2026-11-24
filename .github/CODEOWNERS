@@ -1,0 +1,7 @@
+# Requests the review of the pull requests that modify the CI workflows
+# or the submodules (including the ones opened by Dependabot).
+/.github/              @pierreguillot
+/.gitmodules           @pierreguillot
+/ircam-vamp-extension  @pierreguillot
+/vamp-plugin-packager  @pierreguillot
+/tensorflow            @pierreguillot
