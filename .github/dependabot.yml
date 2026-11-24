@@ -9,13 +9,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    reviewers:
-      - "pierreguillot"
     ignore:
       - dependency-name: "tensorflow"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    reviewers:
-      - "pierreguillot"
